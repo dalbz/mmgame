@@ -18,6 +18,8 @@ client.hkeys("hash key", function (err, replies) {
 });
 
 
+var gameState = {}
+
 var dgram = require("dgram");
 
 var server = dgram.createSocket("udp4");
@@ -25,8 +27,34 @@ server.on("message", function (msg, rinfo) {
     console.log("server got: " + msg + " from " +
         rinfo.address + ":" + rinfo.port);
     var request = JSON.parse(msg);
-    var message = new Buffer("Got it!");
+    
     console.log("USER: " + request.user + " REQUESTING: " + request.event);
+
+    // add the player to the game
+    if (request.event == "login"){
+        gameState[request.user] = {};
+        gameState[request.user]["pos"] = [0,0];
+        console.log("Player logged in");
+    }
+
+    if (request.event == "up"){
+        gameState[request.user]["pos"][1] -= 10;
+    }
+
+    if (request.event == "down"){
+        gameState[request.user]["pos"][1] += 10;
+    }
+
+    if (request.event == "left"){
+        gameState[request.user]["pos"][0] -= 10;
+    }
+
+    if (request.event == "right"){
+        gameState[request.user]["pos"][0] += 10;
+    }
+        
+    var message = new Buffer(JSON.stringify(gameState));
+
     server.send(message, 0, message.length, rinfo.port, rinfo.address, function(err, bytes) {
         // server.close();
     });
