@@ -8,6 +8,7 @@ client.on("error", function (err) {
 client.select(10);
 client.set("string key", "string val", redis.print);
 client.hset("hash key", "hashtest 1", "some value", redis.print);
+/*
 client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
 client.hkeys("hash key", function (err, replies) {
     console.log(replies.length + " replies:");
@@ -15,7 +16,7 @@ client.hkeys("hash key", function (err, replies) {
         console.log("    " + i + ": " + reply);
     });
     client.quit();
-});
+});*/
 
 
 var gameState = {}
@@ -29,6 +30,8 @@ server.on("message", function (msg, rinfo) {
     var request = JSON.parse(msg);
     
     console.log("USER: " + request.user + " REQUESTING: " + request.event);
+
+    client.select(10);
 
     // add the player to the game
     if (request.event == "login"){
@@ -52,6 +55,8 @@ server.on("message", function (msg, rinfo) {
     if (request.event == "right"){
         gameState[request.user]["pos"][0] += 10;
     }
+
+    client.set(request.user, JSON.stringify(gameState[request.user]), redis.print);
         
     var message = new Buffer(JSON.stringify(gameState));
 
