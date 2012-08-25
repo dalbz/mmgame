@@ -1,7 +1,6 @@
 var redis = require("redis"),
     client = redis.createClient();
 
-
 client.on("error", function (err) {
     console.log("error event - " + client.host + ":" + client.port + " - " + err);
 });
@@ -25,7 +24,9 @@ var server = dgram.createSocket("udp4");
 server.on("message", function (msg, rinfo) {
     console.log("server got: " + msg + " from " +
         rinfo.address + ":" + rinfo.port);
+    var request = JSON.parse(msg);
     var message = new Buffer("Got it!");
+    console.log("USER: " + request.user + " REQUESTING: " + request.event);
     server.send(message, 0, message.length, rinfo.port, rinfo.address, function(err, bytes) {
         // server.close();
     });
