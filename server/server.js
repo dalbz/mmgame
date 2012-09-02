@@ -41,19 +41,19 @@ server.on("message", function (msg, rinfo) {
     }
 
     if (request.event == "up"){
-        gameState[request.user]["pos"][1] -= 10;
+        gameState[request.user]["pos"][1] -= 8;
     }
 
     if (request.event == "down"){
-        gameState[request.user]["pos"][1] += 10;
+        gameState[request.user]["pos"][1] += 8;
     }
 
     if (request.event == "left"){
-        gameState[request.user]["pos"][0] -= 10;
+        gameState[request.user]["pos"][0] -= 8;
     }
 
     if (request.event == "right"){
-        gameState[request.user]["pos"][0] += 10;
+        gameState[request.user]["pos"][0] += 8;
     }
 
     client.set(request.user, JSON.stringify(gameState[request.user]), redis.print);

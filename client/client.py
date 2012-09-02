@@ -38,10 +38,28 @@ class Player:
     def __init__(self): 
         self.x = 0
         self.y = 0
-        self.img = pygame.image.load(".\\mmgame\\client\\assets\\hero.png")
+        self.img = []
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\u\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\u\\2.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\u\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\u\\3.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\d\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\d\\2.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\d\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\d\\3.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\r\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\r\\2.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\r\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\r\\3.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\l\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\l\\2.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\l\\1.png"))
+        self.img.append(pygame.image.load(".\\mmgame\\client\\assets\\hero\\walk\\l\\3.png"))
+        self.img_ind = 0
+        self.img_dir = 1
 
     def draw(self, screen):
-        screen.blit(self.img, (self.x, self.y))
+        screen.blit(self.img[self.img_ind], (self.x, self.y))
 
 screen_mode = (640, 480) 
 color_black = 0,0,0
@@ -83,28 +101,27 @@ class Game:
                 if event.type == KEYDOWN: 
                     if event.key == 273:
                         msg = {'user' : '13', 'event' : 'up'}
-                        s.send(json.dumps(msg))
-                        data = s.recv(MAX)
-                        data = json.loads(data)
-                        self.main_player.y = data["13"]["pos"][1]
+                        self.main_player.img_dir = 0
+
                     if event.key == 274:
                         msg = {'user' : '13', 'event' : 'down'}
-                        s.send(json.dumps(msg))
-                        data = s.recv(MAX)
-                        data = json.loads(data)
-                        self.main_player.y = data["13"]["pos"][1]
+                        self.main_player.img_dir = 1
+
                     if event.key == 275:
                         msg = {'user' : '13', 'event' : 'right'}
-                        s.send(json.dumps(msg))
-                        data = s.recv(MAX)
-                        data = json.loads(data)
-                        self.main_player.x = data["13"]["pos"][0]
+                        self.main_player.img_dir = 2
+
                     if event.key == 276:
                         msg = {'user' : '13', 'event' : 'left'}
+                        self.main_player.img_dir = 3
+                        
+                    if (event.key >= 273 and event.key <= 276):
                         s.send(json.dumps(msg))
                         data = s.recv(MAX)
                         data = json.loads(data)
                         self.main_player.x = data["13"]["pos"][0]
+                        self.main_player.y = data["13"]["pos"][1]
+                        self.main_player.img_ind = self.main_player.img_dir*4 + (self.main_player.img_ind + 1) % 4
 
 
                 if event.type == QUIT: 
